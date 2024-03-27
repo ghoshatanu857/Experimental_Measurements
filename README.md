@@ -20,9 +20,13 @@ The steps are as follows,
 
 1. Initially, we link the devices to the PC.
 2. Three pulses are sent by the pulse streamer: two of the pulses are used to drive the *NIDAQmx* and the third one pulses a *laser*.
-3. Pulse to run the laser consists of repeated operation of two consecutive blocks - laser on and laser off. We excite the system with an appropriate wavelength of laser and in the free evolution time, the population relaxes to ground state with an exponential characteristics ($\sim e^{-\frac{t}{tau}}$).
-4. After APD counts the photons, it transmits the signal to NIDAQmx (terminal **PFI3**), which counts the rising edges within the specified time range.
-5. To select the collection window, two pulses are employed to trigger(terminal **PFI4**) and to do timing(terminal **PFI5**) of NIDAQmx.
+
+  ![Sequence for Lifetime measurement.png](https://github.com/ghoshatanu857/Experimental_Measurements/blob/155f85567a59afe85b9e9bb2bcd17ef469b44b2f/Sequence%20for%20Lifetime%20measurement.png)
+
+4. Pulse to run the laser consists of repeated operation of two consecutive blocks - laser on and laser off. We excite the system with an appropriate wavelength of laser and in the free evolution time, the population relaxes to ground state with an exponential characteristics ($\sim e^{-\frac{t}{tau}}$).
+5. After APD counts the photons, it transmits the signal to NIDAQmx (terminal **PFI3**), which counts the rising edges within the specified time range.
+6. To select the collection window, two pulses are employed to trigger(terminal **PFI4**) and to do timing(terminal **PFI5**) of NIDAQmx.
+7. Both trigger and timing pulses consist of two blocks - *reference* pulse block and *signal* pulse block.
 
 ```
 # Laser_Initialization Sequence
@@ -49,9 +53,8 @@ def seqLifetime(*args):
     yield seq_lifetime
 ```
 
-6. Both trigger and timing pulses consist of two blocks - *reference* pulse block and *signal* pulse block.
-7. Time-difference between falling edge of the laser pulse and rising edge of the signal pulse is varied in given number of **steps**. For each step, the sequence is streamed **samples** number of times.
-8. After collecting counts for sample and step number of times, we do averages for better constrast.
+8. Time-difference between falling edge of the laser pulse and rising edge of the signal pulse is varied in given number of **steps**. For each step, the sequence is streamed **samples** number of times.
+9. After collecting counts for sample and step number of times, we do **averages** for better constrast.
 
 Here is an example plot of a real experiment measuring the lifetime of *Up Conversion Particles* (UCPs),  
 
