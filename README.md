@@ -56,7 +56,9 @@ def seqLifetime(*args):
 8. Time-difference between falling edge of the laser pulse and rising edge of the signal pulse is varied in given number of **steps**. For each step, the sequence is streamed **samples** number of times.
 9. After collecting counts for sample and step number of times, we do **averages** for better constrast.
 
-Here is an example plot of a real experiment measuring the lifetime of *Up Conversion Particles* (UCPs),  
+Here is an example_plot of a real experiment measuring the lifetime of *Up Conversion Particles* (UCPs),  
+
+![Lifetime Measurement of UCP.png](https://github.com/ghoshatanu857/Experimental_Measurements/blob/27416f52e7923b4738c5aa4e8e9bc91908f0a7cb/Lifetime%20Measurement%20of%20UCP.png)
 
 ## Authors
 
