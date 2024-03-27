@@ -16,12 +16,44 @@ For experimental application with the attached code, we will need :
 
 ### Running the tests
 
-The steps are as follows, 
+The steps are as follows,  
+
+1. Initially, we link the devices to the PC.
+2. Three pulses are sent by the pulse streamer: two of the pulses are used to drive the *NIDAQmx* and the third one pulses a *laser*.
+3. Pulse to run the laser consists of repeated operation of two consecutive blocks - laser on and laser off. We excite the system with an appropriate wavelength of laser and in the free evolution time, the population relaxes to ground state with an exponential characteristics ($\sim e^{-\frac{t}{tau}}$).
+4. After APD counts the photons, it transmits the signal to NIDAQmx (terminal **PFI3**), which counts the rising edges within the specified time range.
+5. To select the collection window, two pulses are employed to trigger(terminal **PFI4**) and to do timing(terminal **PFI5**) of NIDAQmx.
 
 ```
-1. Initially, we link the devices to the PC. 
-2. .....
+# Laser_Initialization Sequence
+def seqInit(*args):
+  laser_block = [(delay2,0),(laser_on,1),(delay2,0)]
+  seq_init = pulser.createSequence()
+  seq_init.setDigital(laser_port,laser_block)
+  condition_check(seq_init)
+  return seq_init
+
+# Free Evolution Sequence
+def seqLifetime(*args):
+  timing_read_on = read_on-triggerTimingDelay
+  for t in range(steps-1): # neglecting the last step
+    trigger_block = [(read_on,1),(delay1+timeRange[t],0),(read_on,1),(timeRange[-1]-timeRange[t]-delay1-2*read_on,0)]
+    timing_block = [(timing_read_on,1),(delay1+timeRange[t]+triggerTimingDelay,0),
+                     (timing_read_on,1),((timeRange[-1]-timeRange[t]-delay1-triggerTimingDelay-2*timing_read_on),0)]
+
+    seq_evolution = pulser.createSequence()
+    seq_evolution.setDigital(trigger_port, trigger_block)
+    seq_evolution.setDigital(timing_port, timing_block)
+    condition_check(seq_evolution)
+    seq_lifetime = seqInit(*args) + seq_evolution
+    yield seq_lifetime
 ```
+
+6. Both trigger and timing pulses consist of two blocks - *reference* pulse block and *signal* pulse block.
+7. Time-difference between falling edge of the laser pulse and rising edge of the signal pulse is varied in given number of **steps**. For each step, the sequence is streamed **samples** number of times.
+8. After collecting counts for sample and step number of times, we do averages for better constrast.
+
+Here is an example plot of a real experiment measuring the lifetime of *Up Conversion Particles* (UCPs),  
 
 ## Authors
 
