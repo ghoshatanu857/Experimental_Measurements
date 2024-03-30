@@ -1,4 +1,4 @@
-# Experimental Quantum Measurements
+# Qauntum Control Experiments
 
 We do various qunatum measurements with instrument automation.
 
